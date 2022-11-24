@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { MovieProvider } from './src/hooks/useMovie';
+import Routes from './src/routes';
 
 const App: React.FC = () => {
   return (
-    <View>
-      <Text>Hello World</Text>
-    </View>
+    <MovieProvider>
+      <Routes />
+    </MovieProvider>
   );
 };
 
