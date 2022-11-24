@@ -23,7 +23,8 @@ interface MovieContextData {
   movies: IMovies[];
   myMovies: IMovies[];
   loadMovies: () => Promise<void>;
-  updateMyMovies: (movieId: number) => void;
+  addMovieToMyMovies: (movieId: number) => void;
+  removeMovie: (movieId: number) => void;
 }
 
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
@@ -43,7 +44,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
     }
   }, []);
 
-  const updateMyMovies = useCallback(
+  const addMovieToMyMovies = useCallback(
     (movieId: number) => {
       const movie = movies.find(m => m.id === movieId);
 
@@ -57,9 +58,23 @@ export function MovieProvider({ children }: MovieProviderProps) {
     [movies],
   );
 
+  const removeMovie = useCallback(
+    (movieId: number) => {
+      const movie = myMovies.find(m => m.id === movieId);
+
+      if (!movie) {
+        return;
+      }
+
+      setMovies(state => [...state, movie]);
+      setMyMovies(s => s.filter(m => m.id !== movieId));
+    },
+    [myMovies],
+  );
+
   return (
     <MovieContext.Provider
-      value={{ movies, loadMovies, myMovies, updateMyMovies }}>
+      value={{ movies, loadMovies, myMovies, addMovieToMyMovies, removeMovie }}>
       {children}
     </MovieContext.Provider>
   );

@@ -4,7 +4,7 @@ import MovieCard from '../../components/MovieCard';
 import { useMovie } from '../../hooks/useMovie';
 
 const Movies: React.FC = () => {
-  const { myMovies } = useMovie();
+  const { myMovies, removeMovie } = useMovie();
 
   return (
     <ScrollView>
@@ -12,6 +12,7 @@ const Movies: React.FC = () => {
         myMovies.map(movie => (
           <MovieCard
             key={movie.id}
+            handle={() => removeMovie(movie.id)}
             img={movie.poster_path}
             title={movie.title}
             description={movie.overview}
