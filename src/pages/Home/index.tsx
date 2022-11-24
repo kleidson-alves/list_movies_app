@@ -1,11 +1,11 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView } from 'react-native';
+
 import MovieCard from '../../components/MovieCard';
 import { useMovie } from '../../hooks/useMovie';
 
 const Home: React.FC = () => {
-  const { loadMovies, movies } = useMovie();
+  const { loadMovies, movies, updateMyMovies } = useMovie();
 
   useEffect(() => {
     loadMovies();
@@ -17,6 +17,7 @@ const Home: React.FC = () => {
         movies.map(movie => (
           <MovieCard
             key={movie.id}
+            handle={() => updateMyMovies(movie.id)}
             img={movie.poster_path}
             title={movie.title}
             description={movie.overview}

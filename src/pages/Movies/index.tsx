@@ -1,20 +1,15 @@
 import React from 'react';
-import { useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import MovieCard from '../../components/MovieCard';
 import { useMovie } from '../../hooks/useMovie';
 
 const Movies: React.FC = () => {
-  const { loadMovies, movies } = useMovie();
-
-  useEffect(() => {
-    loadMovies();
-  }, [loadMovies]);
+  const { myMovies } = useMovie();
 
   return (
     <ScrollView>
-      {movies &&
-        movies.map(movie => (
+      {myMovies &&
+        myMovies.map(movie => (
           <MovieCard
             key={movie.id}
             img={movie.poster_path}
