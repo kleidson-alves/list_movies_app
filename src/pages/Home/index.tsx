@@ -22,6 +22,7 @@ const Home: React.FC = () => {
             title={movie.title}
             description={movie.overview}
             rating={movie.vote_average}
+            popularity={movie.popularity}
           />
         ))}
     </ScrollView>

@@ -20,6 +20,8 @@ interface IMovies {
   vote_average: number;
   title: string;
   poster_path: string;
+  original_title: string;
+  popularity: number;
 }
 
 interface MovieContextData {
@@ -66,7 +68,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
     const list = await _loadStoragedMovies();
     try {
       const response = await api.get(
-        `${process.env.REACT_APP_URL_TMDB_API}?api_key=${process.env.REACT_APP_TMDB_KEY}&page=1`,
+        `${process.env.REACT_APP_URL_TMDB_API}?api_key=${process.env.REACT_APP_TMDB_KEY}&page=1&language=pt-BR`,
       );
 
       setMovies(

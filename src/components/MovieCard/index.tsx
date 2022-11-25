@@ -7,6 +7,7 @@ interface MovieCardProps {
   description: string;
   img: string;
   rating: number;
+  popularity: number;
   handle?: () => void;
 }
 
@@ -15,6 +16,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
   img,
   rating,
   description,
+  popularity,
   handle = () => {},
 }) => {
   return (
@@ -26,12 +28,17 @@ const MovieCard: React.FC<MovieCardProps> = ({
             uri: `https://image.tmdb.org/t/p/original/${img}`,
           }}
         />
-        <View style={styles.info}>
-          <Text style={styles.title}>{title}</Text>
-          <Text numberOfLines={4} ellipsizeMode={'clip'}>
-            {description}
-          </Text>
-          <Text style={styles.rating}>{rating}</Text>
+        <View style={styles.content}>
+          <View style={styles.info}>
+            <Text style={styles.title}>{title}</Text>
+            <Text numberOfLines={3} ellipsizeMode={'clip'}>
+              {description}
+            </Text>
+          </View>
+          <View style={styles.details}>
+            <Text>Nota: {rating}</Text>
+            <Text>Popularidade: {popularity}</Text>
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
