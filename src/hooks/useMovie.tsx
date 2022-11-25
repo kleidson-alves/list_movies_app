@@ -1,10 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
+
 import { api } from '../services/api';
 
 interface MovieProviderProps {
@@ -23,8 +26,8 @@ interface MovieContextData {
   movies: IMovies[];
   myMovies: IMovies[];
   loadMovies: () => Promise<void>;
-  addMovieToMyMovies: (movieId: number) => void;
-  removeMovie: (movieId: number) => void;
+  addMovieToMyMovies: (movieId: number) => Promise<void>;
+  removeMovie: (movieId: number) => Promise<void>;
 }
 
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
@@ -33,19 +36,51 @@ export function MovieProvider({ children }: MovieProviderProps) {
   const [movies, setMovies] = useState<IMovies[]>([]);
   const [myMovies, setMyMovies] = useState<IMovies[]>([]);
 
+  const _saveMovies = useCallback(async () => {
+    try {
+      const json = JSON.stringify(myMovies);
+
+      await AsyncStorage.setItem('@my_movies', json);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [myMovies]);
+
+  const _loadStoragedMovies = useCallback(async () => {
+    try {
+      const json = await AsyncStorage.getItem('@my_movies');
+
+      if (json) {
+        const listOfMovies = JSON.parse(json);
+
+        setMyMovies(listOfMovies);
+
+        return listOfMovies;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
   const loadMovies = useCallback(async () => {
+    const list = await _loadStoragedMovies();
     try {
       const response = await api.get(
         `${process.env.REACT_APP_URL_TMDB_API}?api_key=${process.env.REACT_APP_TMDB_KEY}&page=1`,
       );
-      setMovies(response.data.results);
+
+      setMovies(
+        response.data.results.filter((m: IMovies) => {
+          return !list.map((item: IMovies) => item.id).includes(m.id);
+        }),
+      );
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [_loadStoragedMovies]);
 
   const addMovieToMyMovies = useCallback(
-    (movieId: number) => {
+    async (movieId: number) => {
       const movie = movies.find(m => m.id === movieId);
 
       if (!movie) {
@@ -59,7 +94,7 @@ export function MovieProvider({ children }: MovieProviderProps) {
   );
 
   const removeMovie = useCallback(
-    (movieId: number) => {
+    async (movieId: number) => {
       const movie = myMovies.find(m => m.id === movieId);
 
       if (!movie) {
@@ -71,6 +106,10 @@ export function MovieProvider({ children }: MovieProviderProps) {
     },
     [myMovies],
   );
+
+  useEffect(() => {
+    _saveMovies();
+  }, [_saveMovies, myMovies]);
 
   return (
     <MovieContext.Provider
