@@ -5,7 +5,7 @@ import MovieCard from '../../components/MovieCard';
 import { useMovie } from '../../hooks/useMovie';
 
 const Home: React.FC = () => {
-  const { loadMovies, movies, addMovieToMyMovies } = useMovie();
+  const { loadMovies, movies } = useMovie();
 
   useEffect(() => {
     loadMovies();
@@ -16,8 +16,9 @@ const Home: React.FC = () => {
       {movies &&
         movies.map(movie => (
           <MovieCard
+            mode="add"
             key={movie.id}
-            handle={() => addMovieToMyMovies(movie.id)}
+            id={movie.id}
             img={movie.poster_path}
             title={movie.title}
             description={movie.overview}

@@ -27,11 +27,23 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
 
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
   title: {
     fontSize: 18,
+    flex: 0.9,
     fontWeight: 'bold',
     color: '#000',
   },
+
+  btnTxt: {
+    color: '#a5a5ff',
+    fontWeight: 'bold',
+  },
+
   details: {
     flexDirection: 'row',
     justifyContent: 'space-around',

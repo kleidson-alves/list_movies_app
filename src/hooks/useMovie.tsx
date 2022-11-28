@@ -74,9 +74,21 @@ export function MovieProvider({ children }: MovieProviderProps) {
       );
 
       setMovies(
-        response.data.results.filter((m: IMovies) => {
-          return !list.map((item: IMovies) => item.id).includes(m.id);
-        }),
+        response.data.results
+          .filter((m: IMovies) => {
+            return !list.map((item: IMovies) => item.id).includes(m.id);
+          })
+          .sort((a: IMovies, b: IMovies) => {
+            if (a.vote_average > b.vote_average) {
+              return -1;
+            }
+
+            if (a.vote_average < b.vote_average) {
+              return 1;
+            }
+
+            return 0;
+          }),
       );
     } catch (err) {
       console.log(err);
@@ -124,29 +136,26 @@ export function MovieProvider({ children }: MovieProviderProps) {
           'X-RapidAPI-Host': 'movie-details1.p.rapidapi.com',
         },
       };
-      try {
-        const r = await api.request(op);
-        const rating = r.data.rating;
+      const r = await api.request(op);
+      const rating = r.data.rating;
 
-        console.log(rating);
-
-        setMovies(state =>
-          state.filter(s =>
-            s.title === name
-              ? { ...s, rating: (rating + s.vote_average) / 2 }
-              : s,
-          ),
-        );
-      } catch (e) {
-        setMovies(state =>
-          state.filter(s =>
-            s.title === name ? { ...s, rating: s.vote_average } : s,
-          ),
-        );
-        console.log(e);
+      if (!rating) {
+        throw new Error('Nan');
       }
+
+      setMovies(state =>
+        state.filter(s =>
+          s.title === name
+            ? Object.assign(s, { rating: (rating + s.vote_average) / 2 })
+            : s,
+        ),
+      );
     } catch (e) {
-      console.log(e);
+      setMovies(state =>
+        state.filter(s =>
+          s.title === name ? Object.assign(s, { rating: s.vote_average }) : s,
+        ),
+      );
     }
   }, []);
 
