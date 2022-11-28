@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { useMovie } from '../../hooks/useMovie';
 import { styles } from './styles';
 
 interface MovieCardProps {
@@ -19,6 +20,17 @@ const MovieCard: React.FC<MovieCardProps> = ({
   popularity,
   handle = () => {},
 }) => {
+  const [showDetails, setShowDetails] = useState(false);
+  const { updateMovieRating } = useMovie();
+
+  const handleShowDetails = useCallback(async () => {
+    if (!showDetails) {
+      await updateMovieRating(title);
+
+      setShowDetails(true);
+    }
+  }, [showDetails, title, updateMovieRating]);
+
   return (
     <TouchableWithoutFeedback onLongPress={handle}>
       <View style={styles.container}>
@@ -35,10 +47,18 @@ const MovieCard: React.FC<MovieCardProps> = ({
               {description}
             </Text>
           </View>
-          <View style={styles.details}>
-            <Text>Nota: {rating}</Text>
-            <Text>Popularidade: {popularity}</Text>
-          </View>
+          <TouchableWithoutFeedback onPress={handleShowDetails}>
+            {showDetails ? (
+              <View style={styles.details}>
+                <Text>Nota: {rating}</Text>
+                <Text>Popularidade: {popularity}</Text>
+              </View>
+            ) : (
+              <View style={styles.details}>
+                <Text>Mostrar detalhes</Text>
+              </View>
+            )}
+          </TouchableWithoutFeedback>
         </View>
       </View>
     </TouchableWithoutFeedback>

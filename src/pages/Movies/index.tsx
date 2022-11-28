@@ -16,7 +16,7 @@ const Movies: React.FC = () => {
             img={movie.poster_path}
             title={movie.title}
             description={movie.overview}
-            rating={movie.vote_average}
+            rating={movie.rating}
             popularity={movie.popularity}
           />
         ))}

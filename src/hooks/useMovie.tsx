@@ -22,6 +22,7 @@ interface IMovies {
   poster_path: string;
   original_title: string;
   popularity: number;
+  rating: number;
 }
 
 interface MovieContextData {
@@ -29,6 +30,7 @@ interface MovieContextData {
   myMovies: IMovies[];
   loadMovies: () => Promise<void>;
   addMovieToMyMovies: (movieId: number) => Promise<void>;
+  updateMovieRating: (name: string) => Promise<void>;
   removeMovie: (movieId: number) => Promise<void>;
 }
 
@@ -95,6 +97,59 @@ export function MovieProvider({ children }: MovieProviderProps) {
     [movies],
   );
 
+  const updateMovieRating = useCallback(async (name: string) => {
+    try {
+      const options = {
+        method: 'GET',
+        url: 'https://imdb8.p.rapidapi.com/auto-complete',
+        params: { q: name },
+        headers: {
+          'X-RapidAPI-Key':
+            '89f1a092bemsheef53b7d9aa93dcp1853b6jsna7c6c9808f2a',
+          'X-RapidAPI-Host': 'imdb8.p.rapidapi.com',
+        },
+      };
+
+      const response = await api.request(options);
+
+      const id = response.data.d[0].id;
+
+      const op = {
+        method: 'GET',
+        url: 'https://movie-details1.p.rapidapi.com/imdb_api/movie',
+        params: { id: id },
+        headers: {
+          'X-RapidAPI-Key':
+            '89f1a092bemsheef53b7d9aa93dcp1853b6jsna7c6c9808f2a',
+          'X-RapidAPI-Host': 'movie-details1.p.rapidapi.com',
+        },
+      };
+      try {
+        const r = await api.request(op);
+        const rating = r.data.rating;
+
+        console.log(rating);
+
+        setMovies(state =>
+          state.filter(s =>
+            s.title === name
+              ? { ...s, rating: (rating + s.vote_average) / 2 }
+              : s,
+          ),
+        );
+      } catch (e) {
+        setMovies(state =>
+          state.filter(s =>
+            s.title === name ? { ...s, rating: s.vote_average } : s,
+          ),
+        );
+        console.log(e);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
   const removeMovie = useCallback(
     async (movieId: number) => {
       const movie = myMovies.find(m => m.id === movieId);
@@ -115,7 +170,14 @@ export function MovieProvider({ children }: MovieProviderProps) {
 
   return (
     <MovieContext.Provider
-      value={{ movies, loadMovies, myMovies, addMovieToMyMovies, removeMovie }}>
+      value={{
+        movies,
+        loadMovies,
+        myMovies,
+        addMovieToMyMovies,
+        removeMovie,
+        updateMovieRating,
+      }}>
       {children}
     </MovieContext.Provider>
   );
