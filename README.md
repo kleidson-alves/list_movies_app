@@ -10,11 +10,13 @@ Para o desenvolvimento dessa aplicação foram utilizadas as seguintes tecnologi
 - Async Storage
 - Axios
 - TMDB API
+- IMDB API
+- Movie Details API
 
-## Funcionalidades 
+## Funcionalidades
 
 - Visualização da lista de filmes que serão lançados em breve
 - Visualizar a média das notas para o filme e a sua popularidade
 - Marcar um filme como comprado
 - Visualizar a lista de filmes comprados
-- Desmarcar um filme como comprado 
+- Desmarcar um filme como comprado
