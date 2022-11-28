@@ -1,6 +1,18 @@
-# KMovies
+# 🎥 KMovies
 
 E se fosse possível saber quais os filmes são os mais aguardados pelo público geral? Com certeza isso daria uma vantagem competitiva para os que estão envolvidos no contexto cinematográfico. Bem, essa é a proposta desta aplicação
+
+<div>
+
+<img src="https://user-images.githubusercontent.com/69803742/204352580-5780676f-1d36-4021-b425-cd52fd16dafc.png"/>
+
+
+<img src="https://user-images.githubusercontent.com/69803742/204352499-8541ff70-d5be-42b6-8399-0b0e424a2bf5.png" />
+
+</div>
+
+
+
 
 ## Tecnologias
 
